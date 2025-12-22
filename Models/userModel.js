@@ -27,15 +27,13 @@ const userSchema = new mongoose.Schema(
 
     image: {
       type: String,
-      default: "",
+      default: "https://i.pravatar.cc/150?img=12",
     },
 
     // AUTH
     password: {
-     type: String,
-     required: true,
-     minlength: 6,
-     select: false, // security, marka login ka dib laguma soo celiyo query-ga caadiga ah
+        type: String,
+        required: true,
     },
 
 
