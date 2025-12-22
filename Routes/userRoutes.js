@@ -12,7 +12,7 @@ import {
   toggleBlockUser,
   // logoutUser,
   deleteUser,
-} from "../Controllers/userController.js"; 
+} from "../controllers/userController.js";
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
 // // import { protect, admin } from "../middleware/authMiddleware.js";
