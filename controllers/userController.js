@@ -30,142 +30,93 @@ export const registerUser = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(409).json({
-        success: false,
+        // success: false,
         message: "User already exists",
       });
-    }
+    } else {
+      console.log("No existing user found with this email. Proceeding to register.");
+    
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
     const user = await User.create({
       name,
       email,
       phone: phone || null,
-      password: hashedPassword,
+      password,
       image: image || "https://i.pravatar.cc/150?img=12",
       role: role || "user",
     });
 
     res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-      },
+      // success: true,
+      // message: "User registered successfully",
+      user,
       token: generateToken(user._id),
-    });
-  } catch (error) {
-    console.error("REGISTER ERROR:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    }); }
+  } catch (e) {
+        res.status(500).json({ error: e.message });
+
+    // console.error("REGISTER ERROR:", error);
+    // res.status(500).json({
+    //   success: false,
+    //   message: "Internal server error",
+    //   error: error.message,
+    // });
   }
 };
 
 // --------------------------
 // LOGIN USER
 // --------------------------
+
+// User Login
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password are required",
-      });
+    const user = await User.findOne({ email });
+    if (user) {
+      if (user.password === password) {
+        res.status(200).json(user);
+      } else {
+        res.status(400).json({ message: "Wrong password" });
+      }
+    } else {
+      res.status(400).json({ message: "User not found" });
     }
-
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    if (user.isBlocked) {
-      return res.status(403).json({
-        success: false,
-        message: "Your account is blocked",
-      });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-    // Update last login
-    user.isOnline = true;
-    user.lastLogin = Date.now();
-    await user.save();
-
-    res.json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        points: user.points,
-        level: user.level,
-      },
-      token: generateToken(user._id),
-    });
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 };
 
 // --------------------------
 // GET ALL USERS (ADMIN)
 // --------------------------
+
+
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
-    res.json({
-      success: true,
-      count: users.length,
-      users,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 };
 
 // --------------------------
 // GET USER BY ID
 // --------------------------
+
+// Get single user by ID
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-    res.json({ success: true, user });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    const user = await User.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 };
 
@@ -217,16 +168,16 @@ export const toggleBlockUser = async (req, res) => {
 // --------------------------
 // LOGOUT USER
 // --------------------------
-export const logoutUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    user.isOnline = false;
-    await user.save();
-    res.json({ success: true, message: "Logged out successfully" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// export const logoutUser = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id);
+//     user.isOnline = false;
+//     await user.save();
+//     res.json({ success: true, message: "Logged out successfully" });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 
 // --------------------------
 // DELETE USER

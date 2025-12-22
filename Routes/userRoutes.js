@@ -10,12 +10,12 @@ import {
   getUserById,
   updateUser,
   toggleBlockUser,
-  logoutUser,
+  // logoutUser,
   deleteUser,
-} from "../Controllers/userController.js";
+} from "../Controllers/userController.js"; 
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
-// import { protect, admin } from "../middleware/authMiddleware.js";
+// // import { protect, admin } from "../middleware/authMiddleware.js";
 const protect = (req, res, next) => { next(); }; // placeholder
 const admin = (req, res, next) => { next(); };   // placeholder
 
@@ -25,6 +25,8 @@ const admin = (req, res, next) => { next(); };   // placeholder
 |--------------------------------------------------------------------------
 */
 
+
+
 // Register new user
 router.post("/register", registerUser);
 
@@ -32,7 +34,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // Logout user (requires authentication)
-router.post("/logout", protect, logoutUser);
+// router.post("/logout", protect, logoutUser);
 
 /*
 |--------------------------------------------------------------------------
