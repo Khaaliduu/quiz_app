@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/userModel.js";
 
+
 /*
 |--------------------------------------------------------------------------
 | Helper Function: Generate JWT Token
@@ -20,7 +21,9 @@ const generateToken = (id) => {
 | @route   POST /api/users/register
 | @access  Public
 |--------------------------------------------------------------------------
-// */
+*/
+// import { generateToken } from "../utils/generateToken.js"; // hubi inaad leedahay util-kan
+
 export const registerUser = async (req, res) => {
   try {
     const { name, email, phone, password, image } = req.body;
@@ -33,10 +36,10 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    // 2️⃣ Check user exists
+    // 2️⃣ Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "User already exists",
       });
@@ -51,10 +54,10 @@ export const registerUser = async (req, res) => {
       email,
       phone,
       password: hashedPassword,
-      image,
+      image: image || "",
     });
 
-    // 5️⃣ Response
+    // 5️⃣ Send response
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -73,10 +76,11 @@ export const registerUser = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal server error",
-      error: error.message,
+      error: error.message, // debug purposes
     });
   }
 };
+
 
 // export const registerUser = async (req, res) => {
 //   try {
@@ -340,6 +344,64 @@ export const logoutUser = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+
+  
+
+};
+  
+/*
+|--------------------------------------------------------------------------
+| @desc    Delete User
+| @route   DELETE /api/users/:id
+| @access  Private
+|--------------------------------------------------------------------------
+*/
+
+
+// DELETE /api/users/:id
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // 1️⃣ Hubi in user ID la bixiyay
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // 2️⃣ Hel user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 3️⃣ Delete user using deleteOne
+    await User.deleteOne({ _id: userId });
+
+    // 4️⃣ Response
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+      },
+    });
+  } catch (error) {
+    console.error("DELETE USER ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };

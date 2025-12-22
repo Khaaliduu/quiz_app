@@ -32,11 +32,12 @@ const userSchema = new mongoose.Schema(
 
     // AUTH
     password: {
-      type: String,
-      required: true,
-      minlength: 6,
-      select: false, // security
+     type: String,
+     required: true,
+     minlength: 6,
+     select: false, // security, marka login ka dib laguma soo celiyo query-ga caadiga ah
     },
+
 
     role: {
       type: String,

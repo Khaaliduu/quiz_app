@@ -11,6 +11,7 @@ import {
   updateUser,
   toggleBlockUser,
   logoutUser,
+  deleteUser,
 } from "../controllers/userController.js" // hubi magaca file-ka
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
@@ -47,6 +48,9 @@ router.get("/:id", protect, getUserById);
 
 // Update user profile
 router.put("/:id", protect, updateUser);
+
+// Delete user profile
+router.delete("/:id", protect, deleteUser);
 
 /*
 |--------------------------------------------------------------------------
