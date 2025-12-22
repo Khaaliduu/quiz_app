@@ -78,19 +78,23 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (user) {
-      if (user.password === password) {
-        res.status(200).json(user);
-      } else {
-        res.status(400).json({ message: "Wrong password" });
-      }
-    } else {
-      res.status(400).json({ message: "User not found" });
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    // Password check
+    if (user.password !== password) {
+      return res.status(400).json({ message: "Wrong password" });
     }
+
+    // Hadda backend-ku wuxuu soo celiyaa user + token
+    res.status(200).json({
+      user,
+      token: generateToken(user._id),
+    });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 };
+
 
 // --------------------------
 // GET ALL USERS (ADMIN)
