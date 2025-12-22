@@ -12,7 +12,7 @@ import {
   toggleBlockUser,
   logoutUser,
   deleteUser,
-} from "../controllers/userController.js" // hubi magaca file-ka
+} from "../Controllers/UserController.js";
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
 // import { protect, admin } from "../middleware/authMiddleware.js";
