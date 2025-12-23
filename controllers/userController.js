@@ -84,6 +84,11 @@ export const loginUser = async (req, res) => {
     if (user.password !== password) {
       return res.status(400).json({ message: "Wrong password" });
     }
+        // ✅ Update online status
+
+    user.isOnline = true;
+await user.save();
+
 
     // Hadda backend-ku wuxuu soo celiyaa user + token
     res.status(200).json({
