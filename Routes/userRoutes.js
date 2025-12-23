@@ -10,6 +10,7 @@ import {
   getUserById,
   updateUser,
   toggleBlockUser,
+  setUserOnline,
   // logoutUser,
   deleteUser,
 } from "../controllers/userController.js";
@@ -32,6 +33,9 @@ router.post("/register", registerUser);
 
 // Login user
 router.post("/login", loginUser);
+// Set user online
+router.post("/online", protect, setUserOnline);
+
 
 // Logout user (requires authentication)
 // router.post("/logout", protect, logoutUser);

@@ -85,7 +85,6 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
         // ✅ Update online status
-
     user.isOnline = true;
 await user.save();
 
@@ -97,6 +96,28 @@ await user.save();
     });
   } catch (e) {
     res.status(500).json({ error: e.message });
+  }
+};
+
+
+// --------------------------
+// SET USER ONLINE (PING)
+// --------------------------
+export const setUserOnline = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isOnline = true;
+    user.lastLogin = new Date();
+    await user.save();
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
