@@ -153,25 +153,55 @@ export const getUserById = async (req, res) => {
 // --------------------------
 // UPDATE USER PROFILE
 // --------------------------
+
+// export const updateUser = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+//     user.name = req.body.name || user.name;
+//     user.phone = req.body.phone || user.phone;
+//     user.image = req.body.image || user.image;
+//     user.role = req.body.role || user.role; // Haddii admin update garayo
+
+//     const updatedUser = await user.save();
+
+//     res.json({
+//       success: true,
+//       message: "User updated successfully",
+//       user: updatedUser,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 export const updateUser = async (req, res) => {
   try {
+    const { name, email, phone, password, image } = req.body;
+
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    user.name = req.body.name || user.name;
-    user.phone = req.body.phone || user.phone;
-    user.image = req.body.image || user.image;
-    user.role = req.body.role || user.role; // Haddii admin update garayo
+    user.name = name ?? user.name;
+    user.email = email ?? user.email;
+    user.phone = phone ?? user.phone;
+    if (password) user.password = password;
+    if (image) user.image = image;
 
-    const updatedUser = await user.save();
+    await user.save();
 
-    res.json({
+    return res.status(200).json({
       success: true,
-      message: "User updated successfully",
-      user: updatedUser,
+      user,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
