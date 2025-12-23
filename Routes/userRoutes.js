@@ -53,7 +53,9 @@ router.get("/", protect, admin, getAllUsers);
 router.get("/:id", protect, getUserById);
 
 // Update user profile
-router.put("/:id", protect, updateUser);
+// router.put("/:id", protect, updateUser);
+router.put("/:id", updateUser);
+
 
 // Delete user profile
 router.delete("/:id", protect, deleteUser);

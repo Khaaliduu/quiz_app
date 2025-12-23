@@ -174,33 +174,45 @@ export const getUserById = async (req, res) => {
 //   } catch (error) {
 //     res.status(500).json({ success: false, message: error.message });
 //   }
-// };
+// };// Update User
 export const updateUser = async (req, res) => {
   try {
     const { name, email, phone, password, image } = req.body;
 
+    // Hubi ID
+    if (!req.params.id) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
     const user = await User.findById(req.params.id);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Update fields kaliya haddii ay yimaadaan
     user.name = name ?? user.name;
     user.email = email ?? user.email;
     user.phone = phone ?? user.phone;
-    if (password) user.password = password;
-    if (image) user.image = image;
+    user.image = image ?? user.image;
+
+    // Password kaliya haddii cusub la soo diray
+    if (password && password.trim() !== "") {
+      user.password = password;
+    }
 
     await user.save();
 
     return res.status(200).json({
       success: true,
+      message: "Profile updated successfully",
       user,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Update User Error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Server error",
     });
   }
 };
