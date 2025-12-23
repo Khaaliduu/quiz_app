@@ -174,48 +174,51 @@ export const getUserById = async (req, res) => {
 //   } catch (error) {
 //     res.status(500).json({ success: false, message: error.message });
 //   }
-// };// Update User
+// };
+// Update Userimport mongoose from "mongoose";
 export const updateUser = async (req, res) => {
   try {
-    const { name, email, phone, password, image } = req.body;
+    const { name, email, phone, password, image, role } = req.body;
+    const { id } = req.params;
 
-    // Hubi ID
-    if (!req.params.id) {
-      return res.status(400).json({ message: "User ID is required" });
+    // ✅ Hubi ID sax ah
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
     }
 
-    const user = await User.findById(req.params.id);
-
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update fields kaliya haddii ay yimaadaan
+    // Update fields kaliya haddii la soo diray
     user.name = name ?? user.name;
     user.email = email ?? user.email;
     user.phone = phone ?? user.phone;
     user.image = image ?? user.image;
+    user.role = role ?? user.role;
 
-    // Password kaliya haddii cusub la soo diray
+    // Password update kaliya haddii la soo diray
     if (password && password.trim() !== "") {
       user.password = password;
     }
 
-    await user.save();
+    const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      user,
+      user: updatedUser, // ✅ Flutter-kaaga wuxuu filayaa "user"
     });
   } catch (error) {
     console.error("Update User Error:", error);
     return res.status(500).json({
       success: false,
-      message: "Server error",
+      message: error.message || "Server error",
     });
   }
 };
+
 
 // --------------------------
 // BLOCK / UNBLOCK USER
