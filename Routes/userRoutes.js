@@ -11,6 +11,7 @@ import {
   updateUser,
   toggleBlockUser,
   setUserOnline,
+  changePassword,
   // logoutUser,
   deleteUser,
 } from "../controllers/userController.js";
@@ -53,8 +54,10 @@ router.get("/", protect, admin, getAllUsers);
 router.get("/:id", protect, getUserById);
 
 // Update user profile
-// router.put("/:id", protect, updateUser);
 router.put("/:id", updateUser);
+// Change password
+router.put("/change-password/:id", changePassword);
+
 
 
 // Delete user profile

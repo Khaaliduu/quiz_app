@@ -262,3 +262,46 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+
+// --------------------------
+// CHANGE PASSWORD
+// --------------------------
+export const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.params.id;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({
+        message: "Old password and new password are required",
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ Check old password (plain text)
+    if (user.password !== oldPassword) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
+
+    // ✅ Update password
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
