@@ -176,46 +176,32 @@ export const getUserById = async (req, res) => {
 //   }
 // };
 // Update Userimport mongoose from "mongoose";
+
+// Update User
 export const updateUser = async (req, res) => {
   try {
-    const { name, email, phone, password, image, role } = req.body;
-    const { id } = req.params;
+    const { image, name, email, phone, password, isAdmin } = req.body;
 
-    // ✅ Hubi ID sax ah
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
+    // Ensure phone is a number (convert from string to number if necessary)
+    const phoneNumber = typeof phone === 'string' ? parseFloat(phone) : phone;
+
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+      user.image = image || user.image; // Haddii image cusub yimaado update, haddii kale sii hay kii hore
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.phone = phoneNumber || user.phone;
+      user.password = password || user.password;
+      user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+
+      const updatedUser = await user.save();
+      res.status(200).json(updatedUser);
+    } else {
+      res.status(404).json({ message: "User not found" });
     }
-
-    const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Update fields kaliya haddii la soo diray
-    user.name = name ?? user.name;
-    user.email = email ?? user.email;
-    user.phone = phone ?? user.phone;
-    user.image = image ?? user.image;
-    user.role = role ?? user.role;
-
-    // Password update kaliya haddii la soo diray
-    if (password && password.trim() !== "") {
-      user.password = password;
-    }
-
-    const updatedUser = await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      user: updatedUser, // ✅ Flutter-kaaga wuxuu filayaa "user"
-    });
-  } catch (error) {
-    console.error("Update User Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: error.message || "Server error",
-    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 };
 
