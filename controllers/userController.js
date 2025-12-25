@@ -304,19 +304,28 @@ export const changePassword = async (req, res) => {
     });
   }
 };
-// Toggle user role admin / user
+// --------------------------
+// TOGGLE ADMIN ROLE
+// --------------------------
+// Toggle user role admin / usercode kaan maxaa waye halkeena dhigayaa ?
+
 export const toggleAdmin = async (req, res) => {
   try {
-    const { id } = req.params; // user ID
+    const { id } = req.params;
+
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Toggle role
     user.role = user.role === "admin" ? "user" : "admin";
+
     await user.save();
 
-    res.status(200).json({ message: "Role updated", user });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.json({
+      message: "Role updated",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
