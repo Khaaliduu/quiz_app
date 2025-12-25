@@ -12,6 +12,7 @@ import {
   toggleBlockUser,
   setUserOnline,
   changePassword,
+  toggleAdmin,
   // logoutUser,
   deleteUser,
 } from "../controllers/userController.js";
@@ -71,6 +72,10 @@ router.delete("/:id", protect, deleteUser);
 
 // Block / Unblock user
 router.put("/block/:id", protect, admin, toggleBlockUser);
+
+// PUT /api/users/make-admin/:id
+router.put("/make-admin/:id", toggleAdmin);
+
 
 // Export router
 export default router;

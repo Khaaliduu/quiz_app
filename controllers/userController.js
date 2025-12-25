@@ -304,4 +304,19 @@ export const changePassword = async (req, res) => {
     });
   }
 };
+// Toggle user role admin / user
+export const toggleAdmin = async (req, res) => {
+  try {
+    const { id } = req.params; // user ID
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Toggle role
+    user.role = user.role === "admin" ? "user" : "admin";
+    await user.save();
+
+    res.status(200).json({ message: "Role updated", user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
