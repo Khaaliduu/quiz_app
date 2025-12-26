@@ -85,8 +85,11 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
         // ✅ Update online status
-    user.isOnline = true;
-await user.save();
+        user.isOnline = true;
+        user.lastActive = new Date();
+        user.lastLogin = new Date();
+        await user.save();
+
 
 
     // Hadda backend-ku wuxuu soo celiyaa user + token
@@ -228,16 +231,26 @@ export const toggleBlockUser = async (req, res) => {
 // --------------------------
 // LOGOUT USER
 // --------------------------
-// export const logoutUser = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user.id);
-//     user.isOnline = false;
-//     await user.save();
-//     res.json({ success: true, message: "Logged out successfully" });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
+export const logoutUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isOnline = false;
+    user.lastSeen = new Date();
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 // --------------------------
 // DELETE USER
@@ -307,8 +320,7 @@ export const changePassword = async (req, res) => {
 // --------------------------
 // TOGGLE ADMIN ROLE
 // --------------------------
-// Toggle user role admin / usercode kaan maxaa waye halkeena dhigayaa ?
-
+// Toggle user role admin / user
 export const toggleAdmin = async (req, res) => {
   try {
     const { id } = req.params;

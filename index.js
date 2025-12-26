@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectToDB from "./config/db.js";
 import userRoutes from "./Routes/userRoutes.js";
+import onlineTracker from "./middleware/onlineTracker.js";
+
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +35,8 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.send("Quiz API is running...");
 });
+// Online Tracker Middleware
+app.use(onlineTracker); // ✅ muhiim
 
 // User routes
 app.use("/api/users/", userRoutes);

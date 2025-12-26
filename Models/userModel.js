@@ -43,21 +43,29 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
-
     // USER STATUS
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
+isBlocked: {
+  type: Boolean,
+  default: false,
+},
 
-    isOnline: {
-      type: Boolean,
-      default: false,
-    },
+isOnline: {
+  type: Boolean,
+  default: false,
+},
 
-    lastLogin: {
-      type: Date,
-    },
+lastLogin: {
+  type: Date,
+},
+
+lastSeen: {
+  type: Date,
+},
+
+lastActive: {
+  type: Date,
+},
+
 
     // QUIZ DATA
     level: {

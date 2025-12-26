@@ -13,7 +13,7 @@ import {
   setUserOnline,
   changePassword,
   toggleAdmin,
-  // logoutUser,
+  logoutUser,
   deleteUser,
 } from "../controllers/userController.js";
 
@@ -35,6 +35,9 @@ router.post("/register", registerUser);
 
 // Login user
 router.post("/login", loginUser);
+// Logout user
+
+router.post("/logout", protect, logoutUser);
 // Set user online
 router.post("/online", protect, setUserOnline);
 
