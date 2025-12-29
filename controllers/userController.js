@@ -233,15 +233,24 @@ export const toggleBlockUser = async (req, res) => {
 // --------------------------
 export const logoutUser = async (req, res) => {
   try {
-    // userId token-ka ayaa laga helayaa (future auth middleware)
-    // hadda kaliya response soo celi
+    const userId = req.user?.id; // mustaqbalka auth middleware
+
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        isOnline: false,
+        lastSeen: new Date(),
+      });
+    }
 
     return res.status(200).json({
       success: true,
-      message: "Logged out successfully",
+      message: "Logged out & user offline",
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
