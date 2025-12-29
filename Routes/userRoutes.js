@@ -57,14 +57,13 @@ router.get("/", protect, admin, getAllUsers);
 // Get single user by ID
 router.get("/:id", protect, getUserById);
 
-// Update user profile
-router.put("/:id", updateUser);
-// Change password
+// ✅ Change password (KA HOR)
 router.put("/change-password/:id", changePassword);
 
+// ✅ Update user
+router.put("/:id", updateUser);
 
-
-// Delete user profile
+// Delete user
 router.delete("/:id", protect, deleteUser);
 
 /*
