@@ -97,6 +97,11 @@ lastActive: {
       type: Number,
       default: 0,
     },
+    logoutAt: {
+  type: Date,
+  default: null,
+},
+
 
     // PASSWORD RESET
     // resetPasswordToken: String,

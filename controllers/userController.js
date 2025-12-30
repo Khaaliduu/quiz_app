@@ -247,6 +247,7 @@ export const logoutUser = async (req, res) => {
 
     user.isOnline = false;
     user.lastSeen = new Date();
+    user.logoutAt = new Date(); // ✅ MUHIIM
     await user.save();
 
     res.status(200).json({
