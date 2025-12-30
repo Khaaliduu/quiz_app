@@ -231,28 +231,35 @@ export const toggleBlockUser = async (req, res) => {
 // --------------------------
 // LOGOUT USER
 // --------------------------
+
 export const logoutUser = async (req, res) => {
   try {
-    const userId = req.user?.id; // mustaqbalka auth middleware
+    const { userId } = req.body;
 
-    if (userId) {
-      await User.findByIdAndUpdate(userId, {
-        isOnline: false,
-        lastSeen: new Date(),
-      });
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
     }
 
-    return res.status(200).json({
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isOnline = false;
+    user.lastSeen = new Date();
+    await user.save();
+
+    res.json({
       success: true,
-      message: "Logged out & user offline",
+      message: "Logged out successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
+
+
+
 
 // export const logoutUser = async (req, res) => {
 //   try {
