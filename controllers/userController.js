@@ -231,7 +231,7 @@ export const toggleBlockUser = async (req, res) => {
 // --------------------------
 // LOGOUT USER
 // --------------------------
-
+// controllers/userController.js
 export const logoutUser = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -249,7 +249,7 @@ export const logoutUser = async (req, res) => {
     user.lastSeen = new Date();
     await user.save();
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Logged out successfully",
     });
