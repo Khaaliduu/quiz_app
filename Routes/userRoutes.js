@@ -15,6 +15,7 @@ import {
   toggleAdmin,
   logoutUser,
   deleteUser,
+  getMe
 } from "../controllers/userController.js";
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
@@ -56,6 +57,9 @@ router.get("/", protect, admin, getAllUsers);
 
 // Get single user by ID
 router.get("/:id", protect, getUserById);
+
+
+router.get("/me", protect, getMe);
 
 // ✅ Change password (KA HOR)
 router.put("/change-password/:id", changePassword);
