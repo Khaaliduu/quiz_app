@@ -1,5 +1,6 @@
 // routes/UserRoutes.js
 import express from "express";
+import protect from '../middleware/protect.js';
 const router = express.Router();
 
 // Controllers
@@ -20,7 +21,7 @@ import {
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
 // // import { protect, admin } from "../middleware/authMiddleware.js";
-const protect = (req, res, next) => { next(); }; // placeholder
+// const protect = (req, res, next) => { next(); }; // placeholder
 const admin = (req, res, next) => { next(); };   // placeholder
 
 /*
@@ -55,11 +56,13 @@ router.post("/online", protect, setUserOnline);
 // Get all users (ADMIN only)
 router.get("/", protect, admin, getAllUsers);
 
+// SAX AH ✅
+router.get("/me", protect, getMe);
+
 // Get single user by ID
 router.get("/:id", protect, getUserById);
 
-
-router.get("/me", protect, getMe);
+// Get 
 
 // ✅ Change password (KA HOR)
 router.put("/change-password/:id", changePassword);
