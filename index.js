@@ -6,6 +6,7 @@ import cors from "cors";
 import connectToDB from "./config/db.js";
 import userRoutes from "./Routes/userRoutes.js";
 import onlineTracker from "./middleware/onlineTracker.js";
+import categoryRoutes  from './Routes/categoryRoutes.js';
 
 
 // Load environment variables
@@ -38,8 +39,20 @@ app.get("/", (req, res) => {
 // Online Tracker Middleware
 app.use(onlineTracker); // ✅ muhiim
 
-// User routes
+// =====================
+//  USERS ROUTE
+// =====================
 app.use("/api/users/", userRoutes);
+
+
+// =====================
+// CATEGORY ROUTES
+// =====================
+app.use("/api/categories", categoryRoutes);
+
+
+
+
 
 // =====================
 // GLOBAL ERROR HANDLER
