@@ -20,7 +20,12 @@ export const createCategory = async (req, res) => {
 // ================= GET ALL CATEGORIES (USER)
 export const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find().sort({ createdAt: -1 });
+    const category = await Category.create({
+  title,
+  description,
+  image,
+  isActive: true,
+});
 
 
     res.json(categories);
