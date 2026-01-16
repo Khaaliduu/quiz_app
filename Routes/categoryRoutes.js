@@ -6,16 +6,16 @@ import {
   getCategories,
   updateCategory,
   deleteCategory,
-  getCategoriesId,
+  getCategoryById,
 } from "../controllers/categoryController.js";
 
 const admin = (req, res, next) => { next(); };   // placeholder
 const router = express.Router();
 
-router.get("/", protect, getCategories);
+router.get("/",getCategories);
 router.post("/", protect, admin, createCategory);
 router.put("/:id", protect, admin, updateCategory);
-router.get("/:id", protect, admin, getCategoriesId);
+router.get("/:id", protect, admin, getCategoryById);
 router.delete("/:id", protect, admin, deleteCategory);
 
 export default router;

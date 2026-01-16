@@ -31,7 +31,7 @@ export const getCategories = async (req, res) => {
 };
 
 // ================= GET CATEGORIES PAY ID (USER)
-export const getCategoriesId = async (req, res) => {
+export const getCategoryById  = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
