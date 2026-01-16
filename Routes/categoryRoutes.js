@@ -12,7 +12,7 @@ import {
 const admin = (req, res, next) => { next(); };   // placeholder
 const router = express.Router();
 
-router.get("/", protect, getCategories);
+router.get("/", protect, admin, getCategories);
 router.post("/", protect, admin, createCategory);
 router.put("/:id", protect, admin, updateCategory);
 router.get("/:id", protect, admin, getCategoryById);
