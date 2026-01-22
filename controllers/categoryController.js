@@ -1,4 +1,9 @@
-import Category from "../Models/category.js";
+import Category from "../Models/categoryModel.js";
+
+
+
+
+
 
 // ================= CREATE CATEGORY (ADMIN).
 export const createCategory = async (req, res) => {

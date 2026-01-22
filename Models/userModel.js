@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    // BASIC INFO
+    //➡️ BASIC INFO
     name: {
       type: String,
       required: true,
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
-    // USER STATUS
+    //➡️ USER STATUS
 isBlocked: {
   type: Boolean,
   default: false,
@@ -67,7 +67,7 @@ lastActive: {
 },
 
 
-    // QUIZ DATA
+    //➡️ QUIZ DATA
     level: {
       type: Number,
       default: 1,
@@ -102,6 +102,17 @@ lastActive: {
   default: null,
 },
 
+
+// ➡️ LEADERBOARD DATA 
+  totalScore: {
+    type: Number,
+    default: 0
+  },
+
+  quizzesPlayed: {
+    type: Number,
+    default: 0
+  }
 
     // PASSWORD RESET
     // resetPasswordToken: String,

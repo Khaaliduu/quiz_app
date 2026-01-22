@@ -20,9 +20,14 @@ import {
 } from "../controllers/userController.js";
 
 // Middleware placeholders (mustaqbalka waxaad ka dhigi kartaa functional)
-// // import { protect, admin } from "../middleware/authMiddleware.js";
-// const protect = (req, res, next) => { next(); }; // placeholder
-const admin = (req, res, next) => { next(); };   // placeholder
+const admin = (req, res, next) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({
+      message: "Admin access only",
+    });
+  }
+  next();
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -65,7 +70,7 @@ router.get("/:id", protect, getUserById);
 // Get 
 
 // ✅ Change password (KA HOR)
-router.put("/change-password/:id", changePassword);
+router.put("/change-password/:id", protect, changePassword);
 
 // ✅ Update user
 router.put("/:id", updateUser);

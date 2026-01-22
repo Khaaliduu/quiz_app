@@ -7,6 +7,9 @@ import connectToDB from "./config/db.js";
 import userRoutes from "./Routes/userRoutes.js";
 import onlineTracker from "./middleware/onlineTracker.js";
 import categoryRoutes  from './Routes/categoryRoutes.js';
+import quizRoutes from "./Routes/quizRoutes.js";
+import questionRoutes from "./Routes/questionRoutes.js";
+import leaderboardRoutes from "./Routes/leaderboardRoutes.js";
 
 
 // Load environment variables
@@ -45,12 +48,29 @@ app.use(onlineTracker); // ✅ muhiim
 app.use("/api/users/", userRoutes);
 
 
+
+
+// =====================
+//  LEADERBOARD ROUTE
+// =====================
+app.use("/api/leaderboard", leaderboardRoutes);
+
+
 // =====================
 // CATEGORY ROUTES
 // =====================
 app.use("/api/categories", categoryRoutes);
 
 
+// =====================
+//  quiz ROUTES
+// =====================
+app.use("/api/quizzes", quizRoutes);
+
+// =====================
+//  question ROUTES
+// =====================
+app.use("/api/questions", questionRoutes);
 
 
 

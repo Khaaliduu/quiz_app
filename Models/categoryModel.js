@@ -25,3 +25,8 @@ const categorySchema = new mongoose.Schema(
 
 const Category = mongoose.model("Category", categorySchema);
 export default Category;
+
+
+/* Waa Category Model kaa oo ka koban 
+  title , Description , image iyo isActive 
+*/

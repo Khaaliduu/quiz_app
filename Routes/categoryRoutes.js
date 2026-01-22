@@ -9,7 +9,14 @@ import {
   getCategoryById,
 } from "../controllers/categoryController.js";
 
-const admin = (req, res, next) => { next(); };   // placeholder
+const admin = (req, res, next) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({
+      message: "Admin access only",
+    });
+  }
+  next();
+};
 const router = express.Router();
 
 router.get("/", protect, admin, getCategories);
