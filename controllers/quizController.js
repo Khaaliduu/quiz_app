@@ -35,7 +35,7 @@ export const createQuiz = async (req, res) => {
 export const getAllQuizzes = async (req, res) => {
   try {
     const quizzes = await Quiz.find()
-      .populate("categoryId", "name")
+      .populate("categoryId", "image title")
       .sort({ createdAt: -1 });
 
     res.status(200).json(quizzes);
