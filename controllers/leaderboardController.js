@@ -1,33 +1,51 @@
 import Leaderboard from "../Models/leaderboardModel.js";
 import User from "../Models/userModel.js";
 import mongoose from "mongoose";
+import { io } from "../index.js";
 
-// Helper: get start & end date for week/month
+/* ===============================
+   HELPER: TIME RANGE
+================================ */
 const getTimeRange = (type = "weekly") => {
   const now = new Date();
+
   if (type === "weekly") {
-    const start = new Date(now.setDate(now.getDate() - now.getDay()));
+    const start = new Date(now);
+    start.setDate(now.getDate() - now.getDay());
     start.setHours(0, 0, 0, 0);
+
     const end = new Date(start);
     end.setDate(start.getDate() + 6);
     end.setHours(23, 59, 59, 999);
+
     return { start, end };
-  } else if (type === "monthly") {
+  }
+
+  if (type === "monthly") {
     const start = new Date(now.getFullYear(), now.getMonth(), 1);
     const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     end.setHours(23, 59, 59, 999);
+
     return { start, end };
   }
 };
 
-// GET Leaderboard
+/* ===============================
+   GET LEADERBOARD
+   GET /api/leaderboard?type=weekly|monthly
+================================ */
 export const getLeaderboard = async (req, res) => {
   try {
     const { type = "weekly", quizId } = req.query;
     const { start, end } = getTimeRange(type);
 
-    const match = { createdAt: { $gte: start, $lte: end } };
-    if (quizId) match.quizId = mongoose.Types.ObjectId(quizId);
+    const match = {
+      createdAt: { $gte: start, $lte: end },
+    };
+
+    if (quizId) {
+      match.quizId = new mongoose.Types.ObjectId(quizId);
+    }
 
     const leaderboard = await Leaderboard.aggregate([
       { $match: match },
@@ -51,20 +69,20 @@ export const getLeaderboard = async (req, res) => {
     ]);
 
     const result = leaderboard.map((item, index) => {
-      let medal = "";
-      if (index === 0) medal = "1🥇";
-      else if (index === 1) medal = "2🥈";
-      else if (index === 2) medal = "3🥉";
+      let medal = null;
+      if (index === 0) medal = "🥇";
+      else if (index === 1) medal = "🥈";
+      else if (index === 2) medal = "🥉";
 
       return {
         rank: index + 1,
+        medal,
+        totalScore: item.totalScore,
         user: {
           id: item.user._id,
           name: item.user.name,
           image: item.user.image,
         },
-        totalScore: item.totalScore,
-        medal,
       };
     });
 
@@ -74,24 +92,35 @@ export const getLeaderboard = async (req, res) => {
   }
 };
 
-// ➡️ Function to update leaderboard in real-time after a quiz
+/* ===============================
+   UPDATE LEADERBOARD (REAL-TIME)
+   Called after quiz finished
+================================ */
 export const updateLeaderboard = async ({ userId, quizId, score }) => {
   try {
-    // 1️⃣ Save score to leaderboard collection
-    const leaderboardEntry = new Leaderboard({ userId, quizId, score });
-    await leaderboardEntry.save();
+    // 1️⃣ Save quiz score
+    const entry = await Leaderboard.create({
+      userId,
+      quizId,
+      score,
+    });
 
-    // 2️⃣ Update user's totalScore and quizzesPlayed
-    const user = await User.findById(userId);
-    user.totalScore += score;
-    user.quizzesPlayed += 1;
-    await user.save();
+    // 2️⃣ Update user quiz stats (kuwa jira userModel)
+    await User.findByIdAndUpdate(userId, {
+      $inc: {
+        points: score,
+        completedQuizzes: 1,
+        correctAnswers: score, // haddii score = correct answers
+      },
+    });
 
-    // 3️⃣ Optional: Emit real-time leaderboard update via Socket.IO
-    // io.emit("leaderboardUpdated"); 
-    // (Client side should listen and refetch leaderboard)
+    // 3️⃣ 🔥 REAL-TIME UPDATE
+    io.emit("leaderboardUpdated", {
+      type: "weekly",
+      quizId,
+    });
 
-    return leaderboardEntry;
+    return entry;
   } catch (error) {
     console.error("Leaderboard update error:", error.message);
     throw error;
