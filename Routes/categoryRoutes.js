@@ -19,10 +19,12 @@ const admin = (req, res, next) => {
 };
 const router = express.Router();
 
-router.get("/", protect, admin, getCategories);
+// Public: allow users to fetch active categories without admin
+router.get("/", getCategories);
 router.post("/", protect, admin, createCategory);
 router.put("/:id", protect, admin, updateCategory);
-router.get("/:id", protect, admin, getCategoryById);
+// Public: fetch category details
+router.get("/:id", getCategoryById);
 router.delete("/:id", protect, admin, deleteCategory);
 
 export default router;
