@@ -36,12 +36,14 @@ const getTimeRange = (type = "weekly") => {
 ================================ */
 export const getLeaderboard = async (req, res) => {
   try {
-    const { type = "weekly", quizId } = req.query;
-    const { start, end } = getTimeRange(type);
+      const { type = "weekly", quizId } = req.query;
+      const range = getTimeRange(type);
 
-    const match = {
-      createdAt: { $gte: start, $lte: end },
-    };
+      // Build match condition. For 'all' (no time range) we don't filter by createdAt.
+      const match = {};
+      if (range && range.start && range.end) {
+        match.createdAt = { $gte: range.start, $lte: range.end };
+      }
 
     if (quizId) {
       match.quizId = new mongoose.Types.ObjectId(quizId);
